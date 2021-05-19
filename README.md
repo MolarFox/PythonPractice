@@ -1,2 +1,2 @@
 # PythonPractice
-## A repo to practice random Python things
+A repo to practice random Python things.
