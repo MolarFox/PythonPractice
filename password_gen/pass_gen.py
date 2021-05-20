@@ -1,31 +1,45 @@
 # A password generator - OOP approach
+# MolarFox 2021
 
 import sys
 import random
 
-class PassGen:
+# Defines ascii character ranges as nested tuples
+CHAR_RANGES = (
+    (65, 90),   # uppercase alphas
+    (97, 122),  # lowercase alphas
+    (48, 57),   # numbers
+    (58, 64)    # symbols only some, for simplicity
+)
 
-    char_ranges = (
-        (65, 90),
-        (97, 122),
-        (48, 57),
-        (58, 64)    # only some, for simplicity
-    )
+class PassGen:
+    """Password generator class"""
 
     def __init__(self):
+        """Initialises password generator class variables"""
         self.pass_length = 0
 
         # Flags controlling nature of generated passwords
         self.flags = {      
-            'incl_uppercase': False,
-            'incl_lowercase': False,
-            'incl_numbers':   False,
-            'incl_symbols':   False
+            'incl_uppercase': True,
+            'incl_lowercase': True,
+            'incl_numbers':   True,
+            'incl_symbols':   True
         }
 
     def _take_bool_input(self, prompt_txt):
+        """Takes validated y/n boolean question response from user in terminal, 
+            using the specified prompt appended with "(y/n): "
+
+        Args:
+            prompt_txt (str): The text to display at prompt
+
+        Returns:
+            Boolean or Nonetype: value of user input or None if failed to parse
+        """
         val = input(prompt_txt + " (y/n): ")
 
+        # Try to parse user input
         if (val == 'y') or (val == 'Y'):
             return True
         elif (val == 'n') or (val == 'N'):
@@ -35,6 +49,7 @@ class PassGen:
 
     
     def collect_specs(self):
+        """Collect all password generation parameters from user via console prompt"""
         
         # Collect length of password(s) to generate
         input_pending = True
@@ -83,6 +98,14 @@ class PassGen:
                 input_pending = False
 
     def generate(self, count=1):
+        """Generate n passwords based on passed parameters
+
+        Args:
+            count (int, optional): Number of passwords to generate. Defaults to 1.
+
+        Returns:
+            str list: List of generated password strings
+        """
         passwords_out = []
         while count > 0:
             curr_pass = ""
@@ -96,8 +119,8 @@ class PassGen:
 
                 # Choose random char in charset and append to current gen password
                 newchar = chr(random.randint(
-                    self.char_ranges[chosen_set][0],
-                    self.char_ranges[chosen_set][1],
+                    CHAR_RANGES[chosen_set][0],
+                    CHAR_RANGES[chosen_set][1],
                 ))
                 curr_pass = curr_pass + newchar
 
@@ -107,13 +130,14 @@ class PassGen:
 
 
 if __name__ == '__main__':
-    generator = PassGen()
+    generator = PassGen()   # Init password generator class instance
 
-    generator.collect_specs()
+    generator.collect_specs()   # Collect parameters for generation from user
 
+    # Collect number of passwords to generate from user (not validated)
     num_to_gen =int(input("Number of passwords to generate: "))
 
-    final_passwords = generator.generate(num_to_gen)
+    final_passwords = generator.generate(num_to_gen)    # Generate passwords
 
     print("\nGenerated Passwords:")
     [print(s) for s in final_passwords]
