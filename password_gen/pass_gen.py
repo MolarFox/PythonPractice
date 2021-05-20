@@ -5,6 +5,13 @@ import random
 
 class PassGen:
 
+    char_ranges = (
+        (65, 90),
+        (97, 122),
+        (48, 57),
+        (58, 64)    # only some, for simplicity
+    )
+
     def __init__(self):
         self.pass_length = 0
 
@@ -76,11 +83,27 @@ class PassGen:
                 input_pending = False
 
     def generate(self, count=1):
+        passwords_out = []
         while count > 0:
+            curr_pass = ""
             for _ in range(self.pass_length):
-                pass
+                
+                # Choose a valid charset from which to pick a char
+                keylist = list(self.flags)
+                chosen_set = random.randint(0,3)
+                while not self.flags[keylist[chosen_set]]:
+                    chosen_set = random.randint(0,3)
 
+                # Choose random char in charset and append to current gen password
+                newchar = chr(random.randint(
+                    self.char_ranges[chosen_set][0],
+                    self.char_ranges[chosen_set][1],
+                ))
+                curr_pass = curr_pass + newchar
+
+            passwords_out.append(curr_pass)
             count -= 1
+        return passwords_out
 
 
 if __name__ == '__main__':
@@ -89,3 +112,9 @@ if __name__ == '__main__':
     generator.collect_specs()
 
     num_to_gen =int(input("Number of passwords to generate: "))
+
+    final_passwords = generator.generate(num_to_gen)
+
+    print("\nGenerated Passwords:")
+    [print(s) for s in final_passwords]
+
