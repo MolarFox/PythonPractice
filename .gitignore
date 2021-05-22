@@ -1,4 +1,5 @@
-.vscode/**
+.vscode/
+*.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -146,3 +147,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# API Key(s)
+*/apikey.txt
