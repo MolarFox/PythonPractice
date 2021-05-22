@@ -94,20 +94,40 @@ def convert(apikey, from_curr, to_curr, amount=1.0):
 if __name__ == '__main__':
     apikey = read_api_key("apikey.txt")
 
-    print("\nWelcome to a cool and good cli currency converter by MolarFox\n")
+    # Static class to hold info during program execution (trying to avoid full object oriented approach for main functions)
+    class CLI_Params:
+        curr_from = "AUD"
+        curr_to = "AUD"
 
-    print(get_conv_rate(apikey, "USD", "AUD"))
-    print(get_conv_rate(apikey, "USD", "aud"))
-    print(get_conv_rate(apikey, "USD", "shittiddies"))
+        @staticmethod
+        def conversion_rate():
+            return get_conv_rate(apikey, CLI_Params.curr_from, CLI_Params.curr_to)
+    
+    # --- CLI Helper Functions ---------------------------------------------------------
+    def print_currencies(apikey):
+        for key in (currs := get_currencies(apikey)):
+            print(f"{key}: {currs[key]['currencyName']}")
+
+
+    def prompt_conversion(apikey):
+        amount = float(input(f"Amount of {CLI_Params.curr_from} to convert: "))
+        converted_val = round(convert(apikey, CLI_Params.curr_from, CLI_Params.curr_to, amount), 2)
+        print(f"{amount} {CLI_Params.curr_from} --> {converted_val} {CLI_Params.curr_to}")
+
+
+    def set_curr_from(): CLI_Params.curr_from = input("Currency to convert from (3 letter code): ")
+    def set_curr_to(): CLI_Params.curr_to = input("Currency to convert to (3 letter code): ")
+
+    print("\nWelcome to a cool and good cli currency converter by MolarFox\n")
 
     # Define dictionary to act as pseudo- switch case
     cli_handler = {
-        "list" :    lambda : print(),
-        "info":     lambda : print(),
-        "from":     lambda : print(),
-        "to":       lambda : print(),
-        "convert":  lambda : print(),
-        "about":    lambda : print(),
+        "list" :    lambda : print_currencies(apikey),
+        "info":     lambda : print(f"Converting {CLI_Params.curr_from} to {CLI_Params.curr_to} at a rate of {CLI_Params.conversion_rate()}"),
+        "from":     set_curr_from, 
+        "to":       set_curr_to,
+        "convert":  lambda : prompt_conversion(apikey),
+        "about":    lambda : print("Created by MolarFox 2021\nhttps://youtu.be/dQw4w9WgXcQ"),
         "quit":     lambda : sys.exit(0),
         "?":        lambda : print(
                                 "Possible commands:\n"
@@ -115,7 +135,7 @@ if __name__ == '__main__':
                                 "from       - change currency to convert from\n"
                                 "to         - change currency to convert to\n"
                                 "info       - display which currencies currently chosen, and their conversion rates\n"
-                                "convert    - convert an amount of the defined currencies (will prompt)\n"
+                                "convert    - convert a specified amount of the chosen currencies\n"
                                 "about      - about this program\n"
                                 "quit       - quit program execution\n"
                                 "?          - display this help text\n"
@@ -128,8 +148,3 @@ if __name__ == '__main__':
         command = input("Enter a command ('?' for help): ").strip(" ").lower()  
         # Use anon functions stored in dict above (basically a switch case)
         cli_handler.get(command, lambda : print("Unknown command! Try again"))()
-
-"""
-    for key in (currs := get_currencies(apikey)):
-        print(f"{key}: {currs[key]['currencyName']}")
-"""
