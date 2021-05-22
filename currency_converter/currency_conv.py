@@ -96,20 +96,43 @@ if __name__ == '__main__':
 
     # Static class to hold info during program execution (trying to avoid full object oriented approach for main functions)
     class CLI_Params:
+        """Class to hold working values during CLI program execution.
+            Not intended to be instantiated (static class)
+        """
         curr_from = "AUD"
         curr_to = "AUD"
 
         @staticmethod
         def conversion_rate():
+            """Gets conversion rate based on current args in static class
+
+            Returns:
+                [type]: [description]
+            """
             return get_conv_rate(apikey, CLI_Params.curr_from, CLI_Params.curr_to)
+    
     
     # --- CLI Helper Functions ---------------------------------------------------------
     def print_currencies(apikey):
+        """Prints list of currencies available from the API service
+
+        Args:
+            apikey (str): API key for free.currconv.com
+        """
         for key in (currs := get_currencies(apikey)):
             print(f"{key}: {currs[key]['currencyName']}")
 
 
     def prompt_conversion(apikey):
+        """Prompts for a float value of currency in source currency to convert into destination currency
+                Converts input amount to a float
+                Round the conversion value to 2 decimal places
+
+                Could be made more readable if expanded out from 1 liners :p
+
+        Args:
+            apikey (str): API key for free.currconv.com
+        """
         amount = float(input(f"Amount of {CLI_Params.curr_from} to convert: "))
         converted_val = round(convert(apikey, CLI_Params.curr_from, CLI_Params.curr_to, amount), 2)
         print(f"{amount} {CLI_Params.curr_from} --> {converted_val} {CLI_Params.curr_to}")
@@ -117,6 +140,7 @@ if __name__ == '__main__':
 
     def set_curr_from(): CLI_Params.curr_from = input("Currency to convert from (3 letter code): ")
     def set_curr_to(): CLI_Params.curr_to = input("Currency to convert to (3 letter code): ")
+
 
     print("\nWelcome to a cool and good cli currency converter by MolarFox\n")
 
