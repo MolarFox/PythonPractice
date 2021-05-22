@@ -5,6 +5,7 @@
 import sys
 import json
 import requests
+from functools import lru_cache
 
 def read_api_key(keypath):
     """Prints the contents of the file at path passed as arg (for use in retrieving API key)
@@ -25,6 +26,7 @@ def read_api_key(keypath):
         raise SystemExit("Error attempting to read API key file - file does not exist")
 
 
+@lru_cache(maxsize=128)
 def get_conv_rate(apikey, from_curr, to_curr):
     """Gets conversion rate between currencies by using API call to service
 
@@ -53,7 +55,8 @@ def get_conv_rate(apikey, from_curr, to_curr):
     else:
         return float(json.loads(conv_rate.text)[conv_string])
     
-
+    
+@lru_cache(maxsize=4)
 def get_currencies(apikey):
     """Gets dictionary containing details of all possible currencies
             Has currency full name, 3-letter abbreviation, and symbol (where available)
@@ -111,7 +114,7 @@ if __name__ == '__main__':
             """
             return get_conv_rate(apikey, CLI_Params.curr_from, CLI_Params.curr_to)
     
-    
+
     # --- CLI Helper Functions ---------------------------------------------------------
     def print_currencies(apikey):
         """Prints list of currencies available from the API service
