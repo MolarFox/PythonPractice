@@ -40,9 +40,9 @@ class PassGen:
         val = input(prompt_txt + " (y/n): ")
 
         # Try to parse user input
-        if (val == 'y') or (val == 'Y'):
+        if val in ['y', 'Y']:
             return True
-        elif (val == 'n') or (val == 'N'):
+        elif val in ['n', 'N']:
             return False
         else:
             return None
@@ -122,7 +122,7 @@ class PassGen:
                     CHAR_RANGES[chosen_set][0],
                     CHAR_RANGES[chosen_set][1],
                 ))
-                curr_pass = curr_pass + newchar
+                curr_pass += newchar
 
             passwords_out.append(curr_pass)
             count -= 1
